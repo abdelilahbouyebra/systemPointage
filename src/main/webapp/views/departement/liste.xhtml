@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </h:head>
+
+    <h:body>
+        <div id="conteiner">
+            <ui:composition template="../template.xhtml"> 
+                <ui:define name="content">
+                    <p:growl id="msgs" life="3000" showDetail="true" /> 
+                     <form id="form">
+                      <p:column style="width:1%">  
+                            <p:commandButton id="ButtonAjout"   value="Nouveau" update=":AjoutDept" immediate="true"   oncomplete="PF('AjoutDept').show()" icon="ui-icon-plus"  title="afficher" > 
+                                  
+                            </p:commandButton>  
+                        </p:column>   
+                    </form>
+                    <h:form id="formDataTale">
+                        <p:dataTable emptyMessage="aucune resultat" id="list" value="#{deptBeans.listDept}" var="list"   paginator="true" paginatorPosition="bottom" rows="5"  
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  >  
+                            <f:facet name="header">  
+                                liste des Départements
+                            </f:facet>  
+                            <p:column headerText="CODE DEPARTEMENT" style="width:5%"    
+                                      filterMatchMode="contains" >  
+                                <h:outputText value="#{list.ndepartmentIdn}" />  
+                            </p:column>  
+
+                            <p:column headerText="DEPARTEMENT" style="width:10%" filterBy="#{list.sname}"   
+                                      filterMatchMode="contains">  
+                                <h:outputText value="#{list.sname}" />  
+                            </p:column> 
+              
+                            <p:column headerText="afficher" style="width:2%">  
+                                <p:commandButton id="ButtonAffiche" update=":formAfficher" oncomplete="PF('afficherDept').show()" icon="ui-icon-search" title="afficher">  
+                                    <f:setPropertyActionListener  value="#{list}" target="#{deptBeans.deptSelected}" />  
+                                </p:commandButton> 
+                              </p:column>  
+                             <p:column headerText="Modif" style="width:2%">  
+                                <p:commandButton id="ButtonModifier" update=":formModifier"  oncomplete="PF('ModifierDept').show()" icon="ui-icon-pencil"  title="modifier">  
+                                    <f:setPropertyActionListener value="#{list}" target="#{deptBeans.deptSelected}" />  
+                                </p:commandButton> 
+                             </p:column>
+                              <p:column headerText="Supp" style="width:2%">  
+                                 <p:commandButton id="ButtonSuprimer" update=":formSup" oncomplete="PF('SupprimerDept').show()" icon="ui-icon-close"  title="supprimer">  
+                                    <f:setPropertyActionListener value="#{list}" target="#{deptBeans.deptSelected}" />  
+                                </p:commandButton>  
+                               </p:column>            
+                        </p:dataTable>  
+                    </h:form>
+                    
+                     <h:form id="formModifier">
+                        <p:dialog header="Modifier User" closable="false" widgetVar="ModifierDept" resizable="false" id="ModifierDept"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+
+                            <h:panelGrid id="display" columns="2" cellpadding="4" style="margin:0 auto;">  
+                                   
+                                 <h:outputText value="DEPARTEMENT:" />      
+                                <p:inputText value="#{deptBeans.deptSelected.sname}"  required="true" />                     
+                                <f:facet name="footer">  
+                                    <p:separator/>
+                                    <p:commandButton id="Modifier" actionListener="#{deptBeans.ModifierDept(actionEvent)}" update=":formDataTale, :msgs" oncomplete="PF('ModifierDept').hide()"  value="modifier"   />  
+                                    <p:commandButton id="Annuler" action="#{deptBeans.Init}"  oncomplete="PF('ModifierDept').hide()"  value="Annuler"     /> 
+                                </f:facet>  
+
+                            </h:panelGrid>  
+
+                        </p:dialog>  
+
+                    </h:form>  
+                   
+                   <h:form id="formAfficher">
+                        <p:dialog header="Information" closable="false" widgetVar="afficherDept" resizable="false" id="dlgUser"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+                            <h:panelGrid id="display" columns="2" cellpadding="4" >  
+                                <h:outputText value="DEPARETEMENT:" />  
+                                <h:outputText value="#{deptBeans.deptSelected.sname}" />                               
+                                <f:facet name="footer">  
+                                    <p:separator/>          
+                                    <p:commandButton id="ok" action="#{deptBeans.Init}"  oncomplete="PF('afficherDept').hide()"  value="Ok"     /> 
+                                </f:facet>   
+                            </h:panelGrid>  
+
+                        </p:dialog>  
+                    </h:form>  
+                    
+                    <h:form id="AjoutDept">
+                        <p:dialog header="Nouveau User" draggable="false" onHide="false" closable="false" widgetVar="AjoutDept" resizable="false" id="AjoutDept"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+                            <h:panelGrid id="display" columns="2" cellpadding="4" style="margin:0 auto;">  
+                           
+                                 <h:outputText value="DEPARTEMENT:" />      
+                                <p:inputText value="#{deptBeans.deptSelected.sname}"  required="true" />               
+                                 <f:facet name="footer">  
+                                    <p:separator/>
+                                    <p:commandButton id="AjouterDept"  update=":formDataTale, :msgs" 
+                                                     actionListener="#{deptBeans.AjouterDept(actionEvent)}" oncomplete="PF('AjoutDept').hide()"  title="ajouter"  value="sauvegarder"   />  
+                                    <p:commandButton id="Annuler"  oncomplete="PF('AjoutDept').hide()"  value="Annuler"     /> 
+                                </f:facet>   
+                            </h:panelGrid>  
+                        </p:dialog>  
+                    </h:form>  
+					 <h:form id="formSup">
+                        <p:confirmDialog id="SupprimerDept"  closable="false" message="Voulez-vous vraiment supprimer #{deptBeans.deptSelected.sname}?? " 
+                                         header="message confirmation" severity="alert" widgetVar="SupprimerDept" showEffect="puff" hideEffect="explode" modal="true"  >  
+                            <h:inputHidden  value="#{deptBeans.deptSelected.ndepartmentIdn}" id="users" required="true"/>
+                           <p:commandButton id="SuprimerUser"  update=":formDataTale, :msgs" 
+                                                     actionListener="#{deptBeans.SuppDept(actionEvent)}" oncomplete="PF('SupprimerDept').hide()"  title="ajouter"  value="Oui"   />  
+                            <p:commandButton id="Annuler" action="#{deptBeans.Init}"   oncomplete="PF('SupprimerDept').hide()"  value="Annuler"     /> 
+                           
+                        </p:confirmDialog>   
+                    </h:form>  
+            	</ui:define>
+            </ui:composition>
+        </div>
+    </h:body>
+</html>
+            

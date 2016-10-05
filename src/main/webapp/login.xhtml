@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Identification</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="${request.contextPath}/resources/css/login.css" rel="stylesheet"></link>
+        <link href="${request.contextPath}/resources/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <link href="${request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css" />
+    </h:head>
+    <h:body>
+        <div class="container">
+            <p:growl id="growl" showDetail="true" life="3000" />  
+            <h:form id="formLogin">  
+                <p:growl id="growl" showDetail="true" /> 
+                <p:panel header="Identification" >  
+
+                    <h:panelGrid columns="2" cellpadding="5">  
+                        <h:outputLabel for="userName" value="Username:" />  
+                         <p:keyboard id="qwerty" value="#{loginBeans.users.userName}"  />
+                        <h:outputLabel for="password" value="Password:" />  
+                        <p:keyboard id="password" value="#{loginBeans.users.password}" password="true"  />
+                        <p:separator/>
+                        <f:facet name="footer">  
+
+                            <p:commandButton id="loginButton" value="Login"  icon="ui-icon-disk" update=":growl"   
+                                             actionListener="#{loginBeans.login(actionEvent)}"  
+                                             oncomplete="handleLoginRequest(xhr, status, args)"/>  
+                        </f:facet>  
+                    </h:panelGrid>  
+                </p:panel>  
+            </h:form>
+
+            <script type="text/javascript">
+                function handleLoginRequest(xhr, status, args) {
+                    if (args.validationFailed || !args.loggedIn) {
+                        jQuery('#formLogin').effect("shake", {times: 3}, 100);
+                    }
+                    else {
+                        location.href = args.redire;
+                    }
+                }
+            </script> 
+
+        </div>
+    </h:body>
+</html>
+

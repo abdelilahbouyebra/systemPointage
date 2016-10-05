@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
+    </h:head>
+
+    <h:body>
+        <div id="conteiner">
+            <ui:composition template="../template.xhtml"> 
+                <ui:define name="content">
+                    <p:growl id="msgs" life="3000" showDetail="true" /> 
+                     <form id="form">
+                     <p:column style="width:1%">  
+                            <p:commandButton id="ButtonAjout"   value="Nouveau" update=":formRegl" immediate="true"   oncomplete="PF('ReglageEmpl').show()" icon="ui-icon-plus"  title="afficher" >                               
+                            </p:commandButton>  
+                        </p:column>   
+                    </form>
+                    <h:form id="formDataTale">
+                        <p:dataTable emptyMessage="aucune resultat"  value="#{regulariseBeans.list}" var="em"  selection="#{regulariseBeans.certiPtgregulariseSelected}" selectionMode="single" dynamic="true"  rowKey="#{em.tbUser.nuserIdn}" 
+                       paginator="true" paginatorPosition="bottom" rows="7"  
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                      >  
+                            <f:facet name="header">  
+                                liste des Employés
+                            </f:facet>  
+                            <p:column headerText="idPtgregularise" style="width:5%"    
+                                      filterMatchMode="idPtgregularise" >  
+                                <h:outputText value="#{em.idPtgregularise}" />  
+                            </p:column> 
+                             <p:column headerText="Nom" style="width:5%"    
+                                      filterMatchMode="contains" >  
+                                <h:outputText value="#{em.tbUser.suserName}" />  
+                            </p:column>                   
+                             <p:column headerText="ndatetime" sortBy="#{em.ndatetime}" style="width:5%" >  
+                                <h:outputText value="#{em.ndatetime}">
+                                  <f:convertDateTime pattern="MM-dd-yy"/> 
+                                 </h:outputText> 
+                            </p:column> 
+                            <p:column headerText="validjrnee" style="width:5%"    
+                                      filterMatchMode="validjrnee" >  
+                                <h:outputText value="#{em.validjrnee}" />  
+                            </p:column> 
+                             <p:column headerText="heurSupp" style="width:5%"    
+                                      filterMatchMode="heurSupp" >  
+                                <h:outputText value="#{em.heurSupp}" />  
+                            </p:column> 
+                             <p:column headerText="heurSuppindex" style="width:5%"    
+                                      filterMatchMode="heurSuppindex" >  
+                                <h:outputText value="#{em.heurSuppindex}" />  
+                            </p:column> 
+                             <p:column headerText="primefonction" style="width:5%"    
+                                      filterMatchMode="primefonction" >  
+                                <h:outputText value="#{em.primefonction}" />  
+                            </p:column> 
+                                <f:facet name="footer">
+						            <p:commandButton update=":formAfficher" icon="ui-icon-search" value="View" oncomplete="PF('afficherUser').show()" />
+						            <p:commandButton update=":formModifier" icon="ui-icon-pencil" value="Modifier" oncomplete="PF('ModifierEmpl').show()" />
+						             <p:commandButton update=":formSup" icon="ui-icon-close" value="Supprimer" oncomplete="PF('SupprimerEmpl').show()" />
+						             <p:button outcome="#{appBeans.urlPatBase}employes/listeAr.xhtml" icon="ui-icon-wrench" value="Réglage Eployer" />
+						        </f:facet>       
+                        </p:dataTable>  
+                    </h:form>
+                    <h:form id="formRegl"  >
+					<p:dialog header="Réglage" draggable="false" onHide="false"
+						closable="false" widgetVar="ReglageEmpl" resizable="false"
+						id="AjoutEmpl" showEffect="puff" hideEffect="explode" modal="true">
+						<h:panelGrid id="display" columns="2" cellpadding="4"
+							style="margin:0 auto;">		
+							<h:outputText value="Nom:" style="font-weight:bold" />				
+							<p:selectOneMenu  value="#{reglageEmployerBeans.regEmplSelected.tbUser.nuserIdn}">
+						            <f:selectItem itemLabel="--nom--" itemValue="" />
+						            <f:selectItems value="#{emplBeans.selectItemOnItemsUser}" />
+						     </p:selectOneMenu>
+							<h:outputText value="Date:" style="font-weight:bold" />			
+							<p:calendar value="#{regulariseBeans.certiPtgregulariseSelected.ndatetime}"/>
+							<h:outputText value="رقم البطاقة الوطنية :" style="font-weight:bold" />
+							
+							<p:selectOneRadio value="#{regulariseBeans.certiPtgregulariseSelected.validjrnee}" >
+							   <f:selectItem itemValue="1" itemLabel="1jourée" />
+							   <f:selectItem itemValue="0.5" itemLabel="1/2 jourée" />	  
+							    <f:selectItem  itemValue="0" itemLabel="0 jourée" />	  			
+							</p:selectOneRadio>
+							<h:outputText value="remarque:" style="font-weight:bold" />				
+							<p:inputTextarea value="#{regulariseBeans.certiPtgregulariseSelected.remarque}" />
+						    <h:outputText value="heurSupp:" style="font-weight:bold" />
+							 <p:spinner id="step1" value="#{regulariseBeans.certiPtgregulariseSelected.heurSupp}"  stepFactor="0.25" />
+							 <h:outputText value="heurSuppindex:" style="font-weight:bold" />
+							 <p:spinner id="step2" value="#{regulariseBeans.certiPtgregulariseSelected.heurSuppindex}"  stepFactor="0.25" />
+							 <h:outputText value="primefonction:" style="font-weight:bold" />
+							 <p:spinner id="step3" value="#{regulariseBeans.certiPtgregulariseSelected.primefonction}"  stepFactor="0.25" />
+							<f:facet name="footer">
+								<p:separator />
+								<p:commandButton id="ReglageEmpl" update=":formDataTale, :msgs"
+									actionListener="#{regulariseBeans.AjouterReglEmpl(actionEvent)}"
+									oncomplete="PF('ReglageEmpl').hide()" title="ajouter"
+									value="sauvegarder" />
+								<p:commandButton id="Annuler"  action="#{reglageEmployerBeans.Init}"
+									oncomplete="PF('ReglageEmpl').hide()"   value="Annuler" />
+							</f:facet>
+						</h:panelGrid>
+					</p:dialog>
+					</h:form>
+                     <h:form id="formModifier">
+                        <p:dialog header="Modifier Employer" closable="false" widgetVar="ModifierEmpl" resizable="false" id="ModifierEmpl"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+                            <h:panelGrid id="display" columns="4" cellpadding="4" style="margin:0 auto;">    
+                            
+                                <h:outputText value="SID CARD:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.suserId}" />                        
+                                <h:outputText value="Nom User:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.suserName}" />
+                                <h:outputText value="Departement" style="font-weight:bold"/>
+								  <p:selectOneMenu  value="#{emplBeans.emplSelected.tbUserDept.ndepartmentIdn}">
+						            <f:selectItem itemLabel="--département--" itemValue="" />
+						            <f:selectItems value="#{deptBeans.selectItemOnItemsDep}" />
+						           </p:selectOneMenu>
+								 
+								 <h:outputText value="Num Telephone:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.stelNumber}" />  
+                                 <h:outputText value="Email:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.semail}" />                 
+                                 <h:outputText value="Date Debut:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.nstartDate}">
+                                       <!-- <f:convertDateTime pattern="MM-dd-yy"/>  -->
+                                </p:inputText>
+                                <h:outputText value="Date Fin:" style="font-weight:bold"/>  
+                                 <p:inputText value="#{emplBeans.emplSelected.nendDate}" style="font-weight:bold">
+                                        <!-- <f:convertDateTime pattern="MM-dd-yy"/>  -->
+                                 </p:inputText>  
+                                <h:inputHidden value="#{emplBeans.emplSelected.nadminLevel}" />                            
+                                <h:inputHidden value="#{emplBeans.emplSelected.nauthMode}" /> 
+                                <h:inputHidden value="#{emplBeans.emplSelected.nauthLimitCount}" />               
+                                <h:inputHidden value="#{emplBeans.emplSelected.ntimedApb}" /> 
+                                <f:facet name="footer">  
+                                    <p:separator/>
+                                    <p:commandButton id="Modifier" actionListener="#{emplBeans.ModifierEmpl(actionEvent)}" update=":formDataTale, :msgs" oncomplete="PF('ModifierEmpl').hide()"  value="modifier"   />  
+                                    <p:commandButton id="Annuler" action="#{emplBeans.Init}"  oncomplete="PF('ModifierEmpl').hide()"  value="Annuler"     /> 
+                                </f:facet>  
+                            </h:panelGrid>  
+
+                        </p:dialog>  
+
+                    </h:form>  
+                   
+                   <h:form id="formAfficher">
+                        <p:dialog header="Information" closable="false" widgetVar="afficherUser" resizable="false" id="dlgUser"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+                            <h:panelGrid id="display" columns="4" cellpadding="4" >  
+                                <h:outputText value="Id User:" style="font-weight:bold" />  
+                                <h:outputText value="#{emplBeans.emplSelected.nuserIdn}" />  
+                                <h:outputText value="Nom User:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.suserName}" />  
+                                 <h:outputText value="Date Debut:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.nstartDate}" >
+                                       <f:convertDateTime pattern="MM-dd-yy"/> 
+                                </h:outputText>  
+                                 <h:outputText value="Date Fin:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.nendDate}" >
+                                        <f:convertDateTime pattern="MM-dd-yy"/> 
+                                </h:outputText>  
+                                 <h:outputText value="Nom User:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.stelNumber}" /> 
+                                 <h:outputText value="Email:" style="font-weight:bold" />  
+                                <h:outputText value="#{emplBeans.emplSelected.semail}" /> 
+                                 <h:outputText value="nadminLevel:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.nadminLevel}" /> 
+                                <h:outputText value="nauthMode:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.nauthMode}" /> 
+                                <h:outputText value="nauthLimitCount:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.nauthLimitCount}" /> 
+                                  <h:outputText value="ntimedApb:" style="font-weight:bold" />  
+                                <h:outputText value="#{emplBeans.emplSelected.ntimedApb}" /> 
+                                <f:facet name="footer">  
+                                    <p:separator/>          
+                                    <p:commandButton id="ok" action="#{emplBeans.Init}"  oncomplete="PF('afficherUser').hide()"  value="Ok"     /> 
+                                </f:facet>   
+                            </h:panelGrid>  
+
+                        </p:dialog>  
+                    </h:form>  
+                    
+                   
+					 <h:form id="formSup">
+                        <p:confirmDialog id="SupprimerEmpl"  closable="false" message="Voulez-vous vraiment supprimer #{emplBeans.emplSelected.suserName}?? " 
+                                         header="message confirmation" severity="alert" widgetVar="SupprimerEmpl" showEffect="puff" hideEffect="explode" modal="true"  >  
+                            <h:inputHidden  value="#{emplBeans.emplSelected.nuserIdn}" id="users" required="true"/>
+                           <p:commandButton id="SuprimerEmpl"  update=":formDataTale, :msgs" 
+                                                     actionListener="#{emplBeans.SuppEmpl(actionEvent)}" oncomplete="PF('SupprimerEmpl').hide()"  title="ajouter"  value="Oui"   />  
+                            <p:commandButton id="Annuler" action="#{emplBeans.Init}"   oncomplete="PF('SupprimerEmpl').hide()"  value="Annuler"     /> 
+                           
+                        </p:confirmDialog>   
+                    </h:form>  
+                   
+                     
+                   
+            	</ui:define>
+            </ui:composition>
+        </div>
+        
+    </h:body>
+</html>

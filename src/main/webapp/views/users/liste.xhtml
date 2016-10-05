@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </h:head>
+
+    <h:body>
+        <div id="conteiner">
+            <ui:composition template="../template.xhtml"> 
+                <ui:define name="content">
+                    <p:growl id="msgs" life="3000" showDetail="true" /> 
+                     <form id="form">
+                      <p:column style="width:1%">  
+                            <p:commandButton id="ButtonAjout"   value="Nouveau" update=":AjoutUser" immediate="true"   oncomplete="PF('AjoutUser').show()" icon="ui-icon-plus"  title="afficher" > 
+                                  
+                            </p:commandButton>  
+                        </p:column>   
+                    </form>
+                    <h:form id="formDataTale">
+                        <p:dataTable emptyMessage="aucune resultat" id="list" value="#{userBeans.list}" var="list"  selection="#{userBeans.usersSelected}" selectionMode="single"  rowKey="#{list.userId}"  paginator="true" paginatorPosition="bottom" rows="5"  
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  >  
+                            <f:facet name="header">  
+                                liste des Utilisateurs
+                            </f:facet>  
+                            <p:column headerText="CODE USER" style="width:5%" filterBy="#{list.userId}"   
+                                      filterMatchMode="contains" >  
+                                <h:outputText value="#{list.userId}" />  
+                            </p:column>  
+
+                            <p:column headerText="NOM USER" style="width:10%" filterBy="#{list.userName}"   
+                                      filterMatchMode="contains">  
+                                <h:outputText value="#{list.userName}" />  
+                            </p:column> 
+                            <p:column headerText="Active" style="width:2%" >  	  				
+									<h:graphicImage name="succ.png" library="images" 
+                                       rendered="#{list.actived==true}" />
+                                       <h:graphicImage name="nn.png" library="images" 
+                                       rendered="#{list.actived==false}" />
+                            </p:column>  
+                           
+                            <p:column headerText="afficher" style="width:2%">  
+                                <p:commandButton id="ButtonAffiche" update=":formAfficher" oncomplete="PF('afficherUser').show()" icon="ui-icon-search" title="afficher">  
+                                    <f:setPropertyActionListener  value="#{list}" target="#{userBeans.usersSelected}" />  
+                                </p:commandButton> 
+                              </p:column>  
+                             <p:column headerText="Modif" style="width:2%">  
+                                <p:commandButton id="ButtonModifier" update=":formModifier"  oncomplete="PF('ModifierUser').show()" icon="ui-icon-pencil"  title="modifier">  
+                                    <f:setPropertyActionListener value="#{list}" target="#{userBeans.usersSelected}" />  
+                                </p:commandButton> 
+                             </p:column>
+                              <p:column headerText="Supp" style="width:2%">  
+                                 <p:commandButton id="ButtonSuprimer" update=":formSup" oncomplete="PF('SupprimerUser').show()" icon="ui-icon-close"  title="supprimer">  
+                                    <f:setPropertyActionListener value="#{list}" target="#{userBeans.usersSelected}" />  
+                                </p:commandButton>  
+                               </p:column>            
+                        </p:dataTable>  
+                    </h:form>
+                    
+                     <h:form id="formModifier">
+                        <p:dialog header="Modifier User" closable="false" widgetVar="ModifierUser" resizable="false" id="ModifierUser"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+
+                            <h:panelGrid id="display" columns="2" cellpadding="4" style="margin:0 auto;">  
+                                <h:outputText value="NOM USER:" />  
+                                <p:inputText value="#{userBeans.usersSelected.userName}"  id="userName" required="true" />
+                                <h:outputText value="PASSWORD:" />  
+                                <p:inputText value="#{userBeans.usersSelected.password}"  id="password" required="true"  />
+                                <h:outputText value="Active:" /> 
+                                <p:selectBooleanCheckbox value="#{userBeans.usersSelected.actived}"  id="actived"/>     
+                                <f:facet name="footer">  
+                                    <p:separator/>
+                                    <p:commandButton id="Modifier" actionListener="#{userBeans.ModifierUser(actionEvent)}" update=":formDataTale, :msgs" oncomplete="PF('ModifierUser').hide()"  value="modifier"   />  
+                                    <p:commandButton id="Annuler" action="#{userBeans.Init}"  oncomplete="PF('ModifierUser').hide()"  value="Annuler"     /> 
+                                </f:facet>  
+
+                            </h:panelGrid>  
+
+                        </p:dialog>  
+
+                    </h:form>  
+                   
+                   <h:form id="formAfficher">
+                        <p:dialog header="Information" closable="false" widgetVar="afficherUser" resizable="false" id="dlgUser"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+                            <h:panelGrid id="display" columns="2" cellpadding="4" >  
+                                <h:outputText value="Id User:" />  
+                                <h:outputText value="#{userBeans.usersSelected.userId}" />  
+                                <h:outputText value="Nom User:" />  
+                                <h:outputText value="#{userBeans.usersSelected.userName}" />  
+                                 <h:outputText value="Password:" />  
+                                <h:outputText value="#{userBeans.usersSelected.password}" />  
+                                <h:outputText value="Active:" /> 
+									<!-- pour jstl
+									<c:if test="#{userBeans.usersSelected.actived==true}">
+									   <h:graphicImage value="/resources/images/succ.png"  />
+									</c:if>
+									<c:if test="#{userBeans.usersSelected.actived==false}">
+									   <h:graphicImage value="/resources/images/nn.png"  />
+									</c:if> -->
+									<h:graphicImage name="succ.png" library="images" 
+                                       rendered="#{userBeans.usersSelected.actived==true}" />
+                                       <h:graphicImage name="nn.png" library="images" 
+                                       rendered="#{userBeans.usersSelected.actived==false}" />
+                                <f:facet name="footer">  
+                                    <p:separator/>          
+                                    <p:commandButton id="ok" action="#{userBeans.Init}"  oncomplete="PF('afficherUser').hide()"  value="Ok"     /> 
+                                </f:facet>   
+                            </h:panelGrid>  
+
+                        </p:dialog>  
+                    </h:form>  
+                    
+                    <h:form id="AjoutUser">
+                        <p:dialog header="Nouveau User" draggable="false" onHide="false" closable="false" widgetVar="AjoutUser" resizable="false" id="AjoutUser"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+                            <h:panelGrid id="display" columns="2" cellpadding="4" style="margin:0 auto;">  
+                                <h:outputText value="NOM USER:" />  
+                                <p:inputText value="#{userBeans.usersSelected.userName}"   required="true" />   
+                                 <h:outputText value="PASSWORD:" />      
+                                <p:inputText value="#{userBeans.usersSelected.password}"  required="true" />  
+                                <h:outputText value="Active:" /> 
+                                <p:selectBooleanCheckbox value="#{userBeans.usersSelected.actived}" />                         
+                                 <f:facet name="footer">  
+                                    <p:separator/>
+                                    <p:commandButton id="AjouterUser"  update=":formDataTale, :msgs" 
+                                                     actionListener="#{userBeans.AjouterUser(actionEvent)}" oncomplete="PF('AjoutUser').hide()"  title="ajouter"  value="sauvegarder"   />  
+                                    <p:commandButton id="Annuler"  oncomplete="PF('AjoutUser').hide()"  value="Annuler"     /> 
+                                </f:facet>   
+                            </h:panelGrid>  
+                        </p:dialog>  
+                    </h:form>  
+					 <h:form id="formSup">
+                        <p:confirmDialog id="SupprimerUser"  closable="false" message="Voulez-vous vraiment supprimer #{userBeans.usersSelected.userName}?? " 
+                                         header="message confirmation" severity="alert" widgetVar="SupprimerUser" showEffect="puff" hideEffect="explode" modal="true"  >  
+                            <h:inputHidden  value="#{userBeans.usersSelected.userId}" id="users" required="true"/>
+                           <p:commandButton id="SuprimerUser"  update=":formDataTale, :msgs" 
+                                                     actionListener="#{userBeans.SuppUser(actionEvent)}" oncomplete="PF('SupprimerUser').hide()"  title="ajouter"  value="Oui"   />  
+                            <p:commandButton id="Annuler" action="#{userBeans.Init}"   oncomplete="PF('SupprimerUser').hide()"  value="Annuler"     /> 
+                           
+                        </p:confirmDialog>   
+                    </h:form>  
+            	</ui:define>
+            </ui:composition>
+        </div>
+    </h:body>
+</html>
+            

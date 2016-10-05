@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
+    </h:head>
+
+    <h:body>
+        <div id="conteiner">
+            <ui:composition template="../template.xhtml"> 
+                <ui:define name="content">
+                    <p:growl id="msgs" life="3000" showDetail="true" /> 
+                     <form id="form">
+                      <p:column style="width:1%">  
+                            <p:commandButton id="ButtonAjout"   value="Nouveau" update=":formRegl" immediate="true"   oncomplete="PF('ReglageEmpl').show()" icon="ui-icon-plus"  title="afficher" >                               
+                            </p:commandButton>  
+                        </p:column>   
+                    </form>
+                    <h:form id="formDataTale">
+                        <p:dataTable emptyMessage="aucune resultat" rendered="true" value="#{reglageEmployerBeans.list}" var="em" id="em" selection="#{reglageEmployerBeans.regEmplSelected}" selectionMode="single"  rowKey="#{em.idEmploye}" 
+                       paginator="true" paginatorPosition="bottom" rows="7"  
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                      >  
+                            <f:facet name="header">  
+                                liste des Employés
+                            </f:facet>  
+                            <p:column headerText="ID Employer" style="width:5%"    
+                                      filterMatchMode="idEmploye" >  
+                                <h:outputText value="#{em.idEmploye}" />  
+                            </p:column> 
+                             <p:column headerText="Nom" style="width:5%"    
+                                      filterMatchMode="em.tbUser.suserName" >  
+                                <h:outputText value="#{em.tbUser.suserName}" />  
+                            </p:column> 
+                             <p:column headerText="SID CARD" style="width:5%"    
+                                      filterMatchMode="tbUser" >  
+                                <h:outputText value="#{em.tbUser.suserId}" />  
+                            </p:column> 
+                            <p:column headerText="NOM" sortBy="#{em.nomAr}" style="width:5%" filterBy="#{em.nomAr}"   
+                                      filterMatchMode="contains" >  
+                                <h:outputText value="#{em.nomAr}" />  
+                            </p:column>  
+                             <p:column headerText="typeEmployeAr" style="width:5%"    
+                                      filterMatchMode="contains" >  
+                                <h:outputText value="#{em.typeEmployeAr}" />  
+                            </p:column>                   
+                             <p:column headerText="professionAr" sortBy="#{em.professionAr}" style="width:5%" >  
+                                <h:outputText value="#{em.professionAr}"> 
+                                 </h:outputText> 
+                            </p:column> 
+                            <p:column headerText="professionMinehaAr" style="width:5%" >  
+                                <h:outputText value="#{em.professionMinehaAr}">
+                                 </h:outputText> 
+                            </p:column>   
+                                <f:facet name="footer">
+                                 <p:column headerText="Modif" style="width:2%">  
+                             </p:column>
+						            <p:commandButton update=":formAfficher" icon="ui-icon-search" value="View" oncomplete="PF('afficherUser').show()" />
+						             <p:commandButton update=":formSup" icon="ui-icon-trash" value="Supprimer" oncomplete="PF('SupprimerEmpl').show()" />
+						             <p:commandButton update=":formRegl" icon="ui-icon-wrench" value="Modifier" disabled="#{empty reglageEmployerBeans.regEmplSelected}" oncomplete="PF('ReglageEmpl').show()" />
+						        </f:facet>       
+                        </p:dataTable>  
+                    </h:form>
+                    
+                   
+                   
+                   <h:form id="formAfficher" dir="RTL" >
+                        <p:dialog header="Information" closable="false" widgetVar="afficherUser" resizable="false" id="dlgUser"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+                            <h:panelGrid id="display" columns="4" cellpadding="4" >  
+                            <h:outputText value="Nom:" style="font-weight:bold" />				
+						      <h:outputText value="#{reglageEmployerBeans.regEmplSelected.tbUser.suserName}"  lang="Ar"/>
+						     <h:outputText value="الإسم  العائلي و  الشخصي :" style="font-weight:bold" />		
+						     <h:outputText value="#{reglageEmployerBeans.regEmplSelected.nomAr}"  lang="Ar"/>
+							<h:outputText value="تاريخ الإزدياد :" style="font-weight:bold" />			
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.dnaissance}"/>
+							<h:outputText value="رقم البطاقة الوطنية :" style="font-weight:bold" />
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.cin}"  />
+							<h:outputText value="تاريخ الشروع في العمل :" style="font-weight:bold" />				
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.dateDebutTravail}" />
+						    <h:outputText value="نوع العامل :" style="font-weight:bold" />
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.typeEmployeAr}" />
+							<h:outputText value="منحة المهنة :" style="font-weight:bold" />
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.professionMinehaAr}" />
+							<h:outputText value="المهنة :"  style="font-weight:bold" />
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.professionAr}" />
+							<h:outputText value="الأجر اليومي :"  style="font-weight:bold" />
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.salaireJrneeAr}" />
+							<h:outputText value="منح الأقدمية :"  style="font-weight:bold" />
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.bourseAncienteAe}" />
+							<h:outputText value=" منحة الساعات الإضافي :"  style="font-weight:bold" />
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.salaireBaseNet}" />
+							<h:outputText value=" منح أخرى :"  style="font-weight:bold" />
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.bourseAutresAe}" />
+							 <h:outputText value="زصندوق الضمان الإجتم:" style="font-weight:bold" />
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.cnns}" />
+							<h:outputText value="منح :"  style="font-weight:bold" />
+							<h:outputText value="#{reglageEmployerBeans.regEmplSelected.tauxAnciente}" />
+                                <f:facet name="footer">  
+                                    <p:separator/>          
+                                    <p:commandButton id="ok"  action="#{reglageEmployerBeans.Init}" oncomplete="PF('afficherUser').hide()"  value="Ok"     /> 
+                                </f:facet>   
+                            </h:panelGrid>  
+
+                        </p:dialog>  
+                    </h:form>  
+
+					 <h:form id="formSup">
+                        <p:confirmDialog id="SupprimerEmpl"  closable="false" message="Voulez-vous vraiment supprimer #{reglageEmployerBeans.regEmplSelected.nomAr}?? " 
+                                         header="message confirmation" severity="alert" widgetVar="SupprimerEmpl" showEffect="puff" hideEffect="explode" modal="true"  >  
+                            <h:inputText  value="#{reglageEmployerBeans.regEmplSelected.idEmploye}" id="users" required="true"/>
+                           <p:commandButton id="SuprimerEmpl"  update=":formDataTale, :msgs" 
+                                                     actionListener="#{reglageEmployerBeans.SuppEmplAr(actionEvent)}" oncomplete="PF('SupprimerEmpl').hide()"  title="ajouter"  value="Oui"   />  
+                            <p:commandButton id="Annuler" action="#{reglageEmployerBeans.Init}"   oncomplete="PF('SupprimerEmpl').hide()"  value="Annuler"     /> 
+                           
+                        </p:confirmDialog>   
+                    </h:form>  
+                   
+                    <h:form id="formRegl" dir="RTL" >
+					<p:dialog header="Réglage" draggable="false" onHide="false"
+						closable="false" widgetVar="ReglageEmpl" resizable="false"
+						id="AjoutEmpl" showEffect="puff" hideEffect="explode" modal="true">
+						<h:panelGrid id="display" columns="4" cellpadding="4"
+							style="margin:0 auto;">		
+							<h:outputText value="Nom:" style="font-weight:bold" />				
+							<p:selectOneMenu  value="#{reglageEmployerBeans.regEmplSelected.tbUser.nuserIdn}">
+						            <f:selectItem itemLabel="--nom--" itemValue="" />
+						            <f:selectItems value="#{emplBeans.selectItemOnItemsUser}" />
+						     </p:selectOneMenu>
+						     <h:outputText value="الإسم  العائلي و  الشخصي :" style="font-weight:bold" />		
+						     <p:inputText value="#{reglageEmployerBeans.regEmplSelected.nomAr}"  lang="Ar"/>
+							<h:outputText value="تاريخ الإزدياد :" style="font-weight:bold" />			
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.dnaissance}"/>
+							<h:outputText value="رقم البطاقة الوطنية :" style="font-weight:bold" />
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.cin}"  />
+							<h:outputText value="تاريخ الشروع في العمل :" style="font-weight:bold" />				
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.dateDebutTravail}" />
+						    <h:outputText value="نوع العامل :" style="font-weight:bold" />
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.typeEmployeAr}" />
+							<h:outputText value="منحة المهنة :" style="font-weight:bold" />
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.professionMinehaAr}" />
+							<h:outputText value="المهنة :"  style="font-weight:bold" />
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.professionAr}" />
+							<h:outputText value="الأجر اليومي :"  style="font-weight:bold" />
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.salaireJrneeAr}" />
+							<h:outputText value="منح الأقدمية :"  style="font-weight:bold" />
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.bourseAncienteAe}" />
+							<h:outputText value=" منحة الساعات الإضافي :"  style="font-weight:bold" />
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.salaireBaseNet}" />
+							<h:outputText value=" منح أخرى :"  style="font-weight:bold" />
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.bourseAutresAe}" />
+							 <h:outputText value="زصندوق الضمان الإجتم:" style="font-weight:bold" />
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.cnns}" />
+							<h:outputText value="منح :"  style="font-weight:bold" />
+							<p:inputText value="#{reglageEmployerBeans.regEmplSelected.tauxAnciente}" />
+
+							<f:facet name="footer">
+								<p:separator />
+								<p:commandButton id="ReglageEmpl" update=":formDataTale, :msgs"
+									actionListener="#{reglageEmployerBeans.AjouterReglEmpl(actionEvent)}"
+									oncomplete="PF('ReglageEmpl').hide()" title="ajouter"
+									value="sauvegarder" />
+								<p:commandButton id="Annuler"  action="#{reglageEmployerBeans.Init}"
+									oncomplete="PF('ReglageEmpl').hide()"   value="Annuler" />
+							</f:facet>
+						</h:panelGrid>
+					</p:dialog>
+					</h:form>
+            	</ui:define>
+            </ui:composition>
+        </div>
+        
+    </h:body>
+</html>

@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link href="${request.contextPath}/resources/css/default.css"
+		rel="stylesheet" type="text/css" />
+	<link href="${request.contextPath}/resources/css/cssLayout.css"
+		rel="stylesheet" type="text/css" />
+	<link href="${request.contextPath}/resources/css/login.css"
+		rel="stylesheet" type="text/css" />
+	<link href="${request.contextPath}/resources/css/style.css"
+		rel="stylesheet" type="text/css" />
+	<title>Systeme de piontage</title>
+</h:head>
+
+<h:body>
+	<div id="conteiner">
+		<div id="top" class="ui-widget-header ui-corner-all">
+			<ui:insert name="top">
+
+				<h1>
+					Système de Contrôle d’accès et de Gestion de temps<br />نظام التحكم في الوصول وإدارة الوقت</h1>
+			</ui:insert>
+		</div>
+
+		<div id="menu">
+			<h:form>
+				<p:menubar>
+					<p:menuitem value="Acceuil"
+						url="#{appBeans.urlPatBase}templateClient.xhtml"
+						icon="ui-icon-close"
+						oncomplete="handleLoginRequest(xhr, status, args)" />
+					<p:submenu label="Editions" icon="ui-icon-pencil">
+						<p:menuitem value=" Utilisateurs"
+							url="#{appBeans.urlPatBase}users/liste.xhtml"
+							icon="ui-icon-person" />
+						<p:menuitem value=" Employés"
+							url="#{appBeans.urlPatBase}employes/liste.xhtml"
+							icon="ui-icon-circle-arrow-e" />
+						<p:menuitem value=" Paramétrage"
+							url="#{appBeans.urlPatBase}parametrage/liste.xhtml"
+							icon="ui-icon-circle-check" />
+						<p:menuitem value=" Départements"
+							url="#{appBeans.urlPatBase}departement/liste.xhtml"
+							icon="ui-icon-arrowreturnthick-1-e" />
+					</p:submenu>
+					<p:submenu label="Consultations" icon="ui-icon-search">
+						<p:menuitem value="Pointage régularisé"
+							url="#{appBeans.urlPatBase}consultations/liste.xhtml" />
+						<p:menuitem value="Pointage par département"
+							url="#{appBeans.urlPatBase}users/liste.xhtml" />
+					</p:submenu>
+
+					<p:submenu label="Imprimer" icon="ui-icon-gear">
+						<p:menuitem value="Listes des employés" ajax="false"
+							target="blink" actionListener="#{emplBeans.PDF}" />
+						<p:menuitem value="Rapport générale" url="#" />
+					</p:submenu>
+
+					<p:menuitem value="Déconnexion"
+						actionListener="#{loginBeans.LogOut(actionEvent)}"
+						icon="ui-icon-close"
+						oncomplete="handleLoginRequest(xhr, status, args)" />
+
+					<f:facet name="options">
+						<p:outputLabel type="button" 
+							value="Utilisateur #{loginBeans.users.userName}" />
+					</f:facet>
+				</p:menubar>
+			</h:form>
+		</div>
+
+		<div id="content"
+			class="center_content ui-widget-content  ui-corner-all">
+			<ui:insert name="content">
+				<div>
+					<p:dataTable id="list" value="#{parametreBeans.list}" var="em">
+                           <f:facet name="header">  
+                               Info Entreprise
+                            </f:facet>  
+						<p:column style="width:5%">
+							<h:outputText value="#{em.identifiantSte}" />
+						</p:column>
+						<p:column style="width:5%">
+							<h:outputText value="#{em.adresse}" />
+						</p:column>
+						<p:column style="width:2%">
+							<h:graphicImage value="./../resources/images/cer.png" />
+						</p:column>
+
+					</p:dataTable>
+				</div>
+			</ui:insert>
+		</div>
+
+		<div id="bottom" class="ui-widget-header ui-corner-all">
+			<ui:insert name="bottom" ><h3>réaliser en 2015 par, bouyebra et boutayeb</h3></ui:insert>
+		</div>
+		<script type="text/javascript">
+            function handleLoginRequest(xhr, status, args) {
+                if (args.LoggeOut) {
+
+                    location.href = args.redire;
+                }
+            }
+        </script>
+	</div>
+</h:body>
+
+</html>

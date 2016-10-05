@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
+    </h:head>
+
+    <h:body>
+        <div id="conteiner">
+            <ui:composition template="../template.xhtml"> 
+                <ui:define name="content">
+                    <p:growl id="msgs" life="3000" showDetail="true" /> 
+                     <form id="form">   
+                    </form>
+                    <h:form id="formDataTale">
+                        <p:dataTable emptyMessage="aucune resultat"  value="#{resultBeans.list}" var="em"  selection="#{resultBeans.resSelected}" selectionMode="single" dynamic="true"  rowKey="#{em.id}" 
+                       paginator="true" paginatorPosition="bottom" rows="20"  scrollHeight="300" lazy="false" scrollable="true"
+                          rowsPerPageTemplate="5,10,20,50,100" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                      >  
+                            <f:facet name="header">  
+                            
+                            </f:facet>  
+                             <p:column headerText="Nom" style="width:3%"  filterBy="#{em.tbUser.suserName}"   
+                                      filterMatchMode="contains"  > 
+                                <h:outputText value="#{em.tbUser.suserName}" /> 
+                            </p:column> 
+                           <p:column headerText="Nom" style="width:6%"> 
+                                <h:outputText value="#{resultBeans.convertTimeH(em.id.ndateTime)}">    
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="SID CARD" style="width:5%"   filterBy="#{em.tbUser.suserId}" 
+                                      filterMatchMode="contains" >  
+                                <h:outputText value="#{em.tbUser.suserId}"/> 
+                            </p:column> 
+                             
+                        </p:dataTable>  
+                    </h:form>
+                   
+            	</ui:define>
+            </ui:composition>
+        </div>
+        
+    </h:body>
+</html>

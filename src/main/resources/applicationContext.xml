@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+
+
+   <!-- <context:property-placeholder location="classpath:META-INF/*.properties" /> -->
+
+	<!--dataSource -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/BioStar"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value=""></property>
+	</bean>
+
+	<!--persistenceUnitManage -->
+	<bean id="persistenceUnitManager"
+		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+		<property name="persistenceXmlLocations">
+			<list>
+				<value>classpath*:META-INF/persistence.xml</value>
+			</list>
+		</property>
+		<property name="defaultDataSource" ref="dataSource" />
+	</bean>
+
+	<!-- entityManagerFactory -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitManager" ref="persistenceUnitManager"></property>
+		<property name="persistenceUnitName" value="U_BioStar"></property>
+		<property name="packagesToScan" value="com.pointage.entities"/>
+	</bean>
+
+	<!-- transactionManager -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<context:annotation-config></context:annotation-config>
+	<!-- l'injection User -->
+	<bean id="dao" class="com.pointage.Dao.UserDaoImpl"></bean>
+	<bean id="metier" class="com.pointage.Metier.UserMetierImpl">
+		<property name="dao" ref="dao"></property>
+	</bean>
+	<bean id="userBeans" class="com.pointage.Beans.UserBeans" init-method="Init">
+	<property name="metier" ref="metier"></property>
+	</bean>
+	<!-- l'injection login -->
+	<bean id="daoLogin" class="com.pointage.Dao.LoginDaoImpl"></bean>
+	<bean id="metierLogin" class="com.pointage.Metier.LoginMetierImpl">
+		<property name="daoLogin" ref="daoLogin"></property>
+	</bean>
+	<bean id="loginBeans" class="com.pointage.Beans.LoginBeans">
+	<property name="metierLogin" ref="metierLogin"></property>
+	</bean>
+	<!-- l'injection Departement -->
+	<bean id="daoDept" class="com.pointage.Dao.DepartementDaoImpl"></bean>
+	<bean id="metier3" class="com.pointage.Metier.DepartementMetierImpl">
+		<property name="daoDept" ref="daoDept"></property>
+	</bean>
+	<bean id="deptBeans" class="com.pointage.Beans.DeptBeans">
+	<property name="metier3" ref="metier3"></property>
+	</bean>
+	<!-- l'injection Employer -->
+	<bean id="daoEmp" class="com.pointage.Dao.EmployeDaoImpl" ></bean>
+	<bean id="metier2" class="com.pointage.Metier.EmployeMetierImpl">
+		<property name="daoEmp" ref="daoEmp"></property>
+	</bean>
+	<bean id="emplBeans" class="com.pointage.Beans.EmplBeans" init-method="Init" >
+	<property name="metier2" ref="metier2"></property>
+	</bean>
+	<!-- l'injection ReglageEmployer -->
+	<bean id="daoReg" class="com.pointage.Dao.ReglageEmplDaoImpl" ></bean>
+	<bean id="metier4" class="com.pointage.Metier.ReglageEmplMetierImpl">
+		<property name="daoReg" ref="daoReg"></property>
+	</bean>
+	<bean id="reglageEmployerBeans" class="com.pointage.Beans.ReglageEmployerBeans" >
+	<property name="metier4" ref="metier4"></property>
+	</bean>
+	<!-- l'injection Parametrage -->
+	<bean id="daoParam" class="com.pointage.Dao.ParametreDaoImpl" ></bean>
+	<bean id="metier6" class="com.pointage.Metier.ParametreMetierImpl">
+		<property name="daoParam" ref="daoParam"></property>
+	</bean>
+	<bean id="parametreBeans" class="com.pointage.Beans.ParametreBeans"  >
+	<property name="metier6" ref="metier6"></property>
+	</bean>
+	<!-- l'injection Regularise -->
+	<bean id="daoRegu" class="com.pointage.Dao.RegulariseDaoImpl" ></bean>
+	<bean id="metier7" class="com.pointage.Metier.RegulariseMetierImpl">
+		<property name="daoRegu" ref="daoRegu"></property>
+	</bean>
+	<bean id="regulariseBeans" class="com.pointage.Beans.RegulariseBeans" >
+	<property name="metier7" ref="metier7"></property>
+	</bean>
+	<!-- l'injection Resultat -->
+	<bean id="daoResult" class="com.pointage.Dao.ResultatDaoImpl" ></bean>
+	<bean id="metier5" class="com.pointage.Metier.ResultatMetierImpl">
+		<property name="daoResult" ref="daoResult"></property>
+	</bean>
+	<bean id="resultBeans" class="com.pointage.Beans.ResultBeans" >
+	<property name="metier5" ref="metier5"></property>
+	</bean> 
+	
+</beans>

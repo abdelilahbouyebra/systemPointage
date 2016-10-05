@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+ <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </h:head>
+
+    <h:body>
+        <ui:composition template="template.xhtml">
+        <div id="bottom" class="ui-widget-header ui-corner-all">
+            <ui:insert name="bottom">
+                <h5>Powred by Certifi@:(+212)53 77 41 677</h5>
+            </ui:insert>
+        </div>
+            </ui:composition>
+        <script type="text/javascript" >
+            function handleLoginRequest(xhr, status, args) {
+                if (args.LoggeOut) {
+
+                    location.href = args.redire;
+                }
+            }
+        </script> 
+            
+    </h:body>
+
+</html>

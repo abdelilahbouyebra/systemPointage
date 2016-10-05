@@ -1,0 +1,300 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
+    </h:head>
+
+    <h:body>
+        <div id="conteiner">
+            <ui:composition template="../template.xhtml"> 
+                <ui:define name="content">
+                    <p:growl id="msgs" life="3000" showDetail="true" /> 
+                     <form id="form">
+                      <p:column style="width:1%">  
+                            <p:commandButton id="createButton"   value="Nouveau" action="#{emplBeans.Init}" update=":AjoutEmpl" immediate="true"   oncomplete="PF('AjoutEmpl').show()" icon="ui-icon-plus"  title="afficher" >                               
+                            </p:commandButton>                        
+						     <p:commandButton id="viewButton" update=":formAfficher" icon="ui-icon-search" value="View" disabled="#{empty emplBeans.emplSelected}" oncomplete="PF('afficherUser').show()" />
+						     <p:commandButton id="editButton" update=":formModifier" icon="ui-icon-pencil" value="Modifier" disabled="#{emplBeans.disabled}" oncomplete="PF('ModifierEmpl').show()" />
+						     <p:commandButton id="deleteButton" update=":formSup" icon="ui-icon-close" value="Supprimer" disabled="#{emplBeans.disabled}" oncomplete="PF('SupprimerEmpl').show()" /> 
+						     
+				</p:column>   
+                        
+                    </form>
+                    <h:form id="formDataTale">
+                        <p:dataTable emptyMessage="aucune resultat"   value="#{emplBeans.list}" var="em"  selection="#{emplBeans.emplSelected}" selectionMode="single" dynamic="true"  rowKey="#{em.nuserIdn}" 
+                       paginator="true" paginatorPosition="bottom" rows="7" paginatorAlwaysVisible="false"     onselectComplete="ReglageEmpl.show();"   
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" >  
+                                      
+                                      <p:ajax event="rowSelect" update=":editButton" listener="#{emplBeans.onRowSelect}" />
+                                      <p:ajax event="rowSelect" update=":deleteButton" listener="#{emplBeans.onRowSelect}" />
+                            <f:facet name="header">  
+                                liste des Employés
+                            </f:facet>  
+                            <p:column headerText="SID CARD" style="width:5%"   
+                                      filterMatchMode="suserId" >  
+                                <h:outputText value="#{em.suserId}" />  
+                            </p:column> 
+                            <p:column headerText="NOM"   style="width:5%"
+                                      filterMatchMode="contains" >  
+                                <h:outputText value="#{em.certiEmploye.nomAr}" />  
+                            </p:column>  
+                            <p:column headerText="NOM" sortBy="#{em.suserName}" style="width:5%" filterBy="#{em.suserName}"   
+                                      filterMatchMode="contains" >  
+                                <h:outputText value="#{em.suserName}" />  
+                            </p:column>  
+                             <p:column headerText="DEPARTEMENT" style="width:5%"    
+                                      filterMatchMode="contains" >  
+                                <h:outputText value="#{em.tbUserDept.sname}" />  
+                            </p:column>                   
+                             <p:column headerText="DATE DEBUT" sortBy="#{em.nstartDate}" style="width:5%" >  
+                                <h:outputText value="#{emplBeans.convertTime(em.nstartDate)}">
+                                 </h:outputText> 
+                            </p:column> 
+                            <p:column headerText="DATE FIN" style="width:5%" >  
+                                <h:outputText value="#{emplBeans.convertTime(em.nendDate)}"> 
+                                 </h:outputText> 
+                            </p:column>   
+                                <f:facet name="footer">
+                                <p:commandButton id="reg" update=":formRegl" icon="ui-icon-wrench" value="Réglage"   oncomplete="PF('ReglageEmpl').show()">
+                              </p:commandButton>
+                               <p:commandButton update=":formReglAdd" icon="ui-icon-wrench" value="Ajouter"  oncomplete="PF('ReglageEmplAdd').show()">
+                              </p:commandButton>
+						        </f:facet>       
+                        </p:dataTable>  
+                    </h:form>
+                  
+                     <h:form id="formModifier">
+                        <p:dialog header="Modifier Employer" closable="false" widgetVar="ModifierEmpl" resizable="false" id="ModifierEmpl"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+                            <h:panelGrid id="display" columns="4" cellpadding="4" style="margin:0 auto;">    
+                            
+                                <h:outputText value="SID CARD:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.suserId}" />                        
+                                <h:outputText value="Nom User:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.suserName}" />
+                                <h:outputText value="Departement" style="font-weight:bold"/>
+								  <p:selectOneMenu  value="#{emplBeans.emplSelected.tbUserDept.ndepartmentIdn}">
+						            <f:selectItem itemLabel="--département--" itemValue="" />
+						            <f:selectItems value="#{deptBeans.selectItemOnItemsDep}" />
+						           </p:selectOneMenu>
+								 
+								 <h:outputText value="Num Telephone:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.stelNumber}" />  
+                                 <h:outputText value="Email:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.semail}" />                 
+                                 <h:outputText value="Date Debut:" style="font-weight:bold"/>  
+                                 <p:calendar value="#{emplBeans.nstartDate}" pattern="MM/dd/yyyy" locale="pt" />
+                                <h:outputText value="Date Fin:" style="font-weight:bold"/>  
+                                 <p:calendar value="#{emplBeans.nendDate}" pattern="MM/dd/yyyy" locale="pt" /> 
+                                <h:inputHidden value="#{emplBeans.emplSelected.nadminLevel}" />                            
+                                <h:inputHidden value="#{emplBeans.emplSelected.nauthMode}" /> 
+                                <h:inputHidden value="#{emplBeans.emplSelected.nauthLimitCount}" />               
+                                <h:inputHidden value="#{emplBeans.emplSelected.ntimedApb}" /> 
+                                <f:facet name="footer">  
+                                    <p:separator/>
+                                    <p:commandButton  rendered="#{userBeans.usersSelected != null}"  id="Modifier" actionListener="#{emplBeans.ModifierEmpl(actionEvent)}" update=":formDataTale, :msgs" oncomplete="PF('ModifierEmpl').hide()"  value="modifier"   />  
+                                    <p:commandButton id="Annuler" process="@this" action="#{emplBeans.Init}" oncomplete="PF('ModifierEmpl').hide()"  value="Annuler"     /> 
+                                </f:facet>  
+                            </h:panelGrid>  
+
+                        </p:dialog>  
+
+                    </h:form>  
+                   
+                   <h:form id="formAfficher">
+                        <p:dialog header="Information" closable="false" widgetVar="afficherUser" resizable="false" id="dlgUser"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+                            <h:panelGrid id="display" columns="4" cellpadding="4" >  
+                                <h:outputText value="Id User:" style="font-weight:bold" />  
+                                <h:outputText value="#{emplBeans.emplSelected.nuserIdn}" />  
+                                <h:outputText value="Nom User:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.suserName}" />  
+                                 <h:outputText value="Date Debut:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.nstartDate}" >
+                                       <f:convertDateTime pattern="MM-dd-yy"/> 
+                                </h:outputText>  
+                                 <h:outputText value="Date Fin:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.nendDate}" >
+                                        <f:convertDateTime pattern="MM-dd-yy"/> 
+                                </h:outputText>  
+                                 <h:outputText value="Nom User:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.stelNumber}" /> 
+                                 <h:outputText value="Email:" style="font-weight:bold" />  
+                                <h:outputText value="#{emplBeans.emplSelected.semail}" /> 
+                                 <h:outputText value="nadminLevel:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.nadminLevel}" /> 
+                                <h:outputText value="nauthMode:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.nauthMode}" /> 
+                                <h:outputText value="nauthLimitCount:" style="font-weight:bold"/>  
+                                <h:outputText value="#{emplBeans.emplSelected.nauthLimitCount}" /> 
+                                  <h:outputText value="ntimedApb:" style="font-weight:bold" />  
+                                <h:outputText value="#{emplBeans.emplSelected.ntimedApb}" /> 
+                                <f:facet name="footer">  
+                                    <p:separator/>          
+                                    <p:commandButton id="ok" action="#{emplBeans.Init}"  oncomplete="PF('afficherUser').hide()"  value="Ok"     /> 
+                                </f:facet>   
+                            </h:panelGrid>  
+
+                        </p:dialog>  
+                    </h:form>  
+                    
+                    <h:form id="AjoutEmpl">
+                        <p:dialog header="Nouveau Employer" draggable="false" onHide="false" closable="false" widgetVar="AjoutEmpl" resizable="false" id="AjoutEmpl"  
+                                  showEffect="puff" hideEffect="explode" modal="true">  
+                            <h:panelGrid id="display" columns="4" cellpadding="4" style="margin:0 auto;">  
+                        
+                                 <h:outputText value="SID CARD:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.suserId}" />
+                                 
+                                <h:outputText value="Nom User:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.suserName}" />
+                                <h:outputText value="Departement" style="font-weight:bold"/>
+								  <p:selectOneMenu  value="#{emplBeans.emplSelected.tbUserDept.ndepartmentIdn}" >
+						            <f:selectItem itemLabel="--département--" itemValue="" />
+						            <f:selectItems value="#{deptBeans.selectItemOnItemsDep}" />
+						           </p:selectOneMenu>
+								 
+								 <h:outputText value="Num Telephone:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.stelNumber}" />  
+                                 <h:outputText value="Email:" style="font-weight:bold"/>  
+                                <p:inputText value="#{emplBeans.emplSelected.semail}" />                 
+                                 <h:outputText value="Date Debut:" style="font-weight:bold"/>  
+                                 <p:calendar value="#{emplBeans.nstartDate}"  pattern="MM/dd/yyyy" locale="pt"/>
+                                 <h:outputText value="Date Fin:" style="font-weight:bold"/> 
+                                 <p:calendar value="#{emplBeans.nendDate}" pattern="MM/dd/yyyy" locale="pt">
+                                     
+                                 </p:calendar> 
+                                <h:inputHidden value="#{emplBeans.emplSelected.nadminLevel}" />                            
+                                <h:inputHidden value="#{emplBeans.emplSelected.nauthMode}" /> 
+                                <h:inputHidden value="#{emplBeans.emplSelected.nauthLimitCount}" />               
+                                <h:inputHidden value="#{emplBeans.emplSelected.ntimedApb}" />
+                                 
+                                 <f:facet name="footer">  
+                                    <p:separator/>
+                                    <p:commandButton id="AjouterEmpl"  update=":formDataTale, :msgs" 
+                                                     actionListener="#{emplBeans.AjouterEmpl(actionEvent)}" oncomplete="PF('AjoutEmpl').hide()"  title="ajouter"  value="sauvegarder" action="#{emplBeans.Init}"  />  
+                                    <p:commandButton id="Annuler" action="#{emplBeans.Init}"  oncomplete="PF('AjoutEmpl').hide()"  value="Annuler"     /> 
+                                </f:facet>   
+                            </h:panelGrid>  
+                        </p:dialog>  
+                    </h:form>  
+					 <h:form id="formSup">
+                        <p:confirmDialog id="SupprimerEmpl"  closable="false" message="Voulez-vous vraiment supprimer #{emplBeans.emplSelected.suserName}?? " 
+                                         header="message confirmation" severity="alert" widgetVar="SupprimerEmpl" showEffect="puff" hideEffect="explode" modal="true"  >  
+                            <h:inputHidden  value="#{emplBeans.emplSelected.nuserIdn}" id="users" required="true"/>
+                           <p:commandButton id="SuprimerEmpl"  update=":formDataTale, :msgs" 
+                                                     actionListener="#{emplBeans.SuppEmpl(actionEvent)}" oncomplete="PF('SupprimerEmpl').hide()"  title="ajouter"  value="Oui"   />  
+                            <p:commandButton id="Annuler" action="#{emplBeans.Init}"   oncomplete="PF('SupprimerEmpl').hide()"  value="Annuler"     /> 
+                           
+                        </p:confirmDialog>   
+                    </h:form>  
+                   
+                      <h:form id="formRegl" dir="RTL" >
+					<p:dialog header="Réglage" draggable="true" onHide="false"
+						closable="false" widgetVar="ReglageEmpl" resizable="true"
+						id="AjoutEmpl" showEffect="puff" hideEffect="explode" modal="true" rendered="#{emplBeans.emplSelected != null}">
+						<h:panelGrid id="display" columns="4" cellpadding="4"
+							style="margin:0 auto;">		
+							<h:outputText value="Nom:" style="font-weight:bold" />				
+							<p:outputLabel value="#{emplBeans.emplSelected.suserName}"  />
+						     <h:outputText value="الإسم  العائلي و  الشخصي :" style="font-weight:bold" />		
+						     <p:inputText value="#{emplBeans.emplSelected.certiEmploye.nomAr}"/>
+							<h:outputText value="تاريخ الإزدياد :" style="font-weight:bold" />			
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.dnaissance}"/>
+							<h:outputText value="رقم البطاقة الوطنية :" style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.cin}"  />
+							<h:outputText value="تاريخ الشروع في العمل :" style="font-weight:bold" />				
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.dateDebutTravail}" />
+						    <h:outputText value="نوع العامل :" style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.typeEmployeAr}" />
+							<h:outputText value="منحة المهنة :" style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.professionMinehaAr}" />
+							<h:outputText value="المهنة :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.professionAr}" />
+							<h:outputText value="الأجر اليومي :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.salaireJrneeAr}" />
+							<h:outputText value="منح الأقدمية :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.bourseAncienteAe}" />
+							<h:outputText value=" منحة الساعات الإضافي :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.salaireBaseNet}" />
+							<h:outputText value=" منح أخرى :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.bourseAutresAe}" />
+							 <h:outputText value="زصندوق الضمان الإجتم:" style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.cnns}" />
+							<h:outputText value="منح :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.emplSelected.certiEmploye.tauxAnciente}" />
+							<h:inputHidden value="#{emplBeans.emplSelected.nuserIdn}"  />
+							<f:facet name="footer">
+								<p:separator />
+								<p:commandButton id="ReglageEmpl" update=":formDataTale, :msgs"
+									actionListener="#{emplBeans.ModifReg(actionEvent)}"
+									oncomplete="PF('ReglageEmpl').hide()" title="ajouter"
+									value="sauvegarder" />
+								<p:commandButton id="Annuler"  action="#{reglageEmployerBeans.Init}"
+									oncomplete="PF('ReglageEmpl').hide()"   value="Annuler" />
+							</f:facet>
+						</h:panelGrid>
+					</p:dialog>
+					</h:form>
+                  
+                   <h:form id="formReglAdd" dir="RTL" >
+					<p:dialog header="Ajouter Nouveau Réglage" draggable="true" onHide="false"
+						closable="false" widgetVar="ReglageEmplAdd" resizable="true"
+						id="AjoutEmpl" showEffect="puff" hideEffect="explode" modal="true">
+						<h:panelGrid id="display" columns="4" cellpadding="4"
+							style="margin:0 auto;">		
+							<h:outputText value="Nom:" style="font-weight:bold" />				
+							<p:outputLabel value="#{emplBeans.emplSelected.suserName}"  />
+						     <h:outputText value="الإسم  العائلي و  الشخصي :" style="font-weight:bold" />		
+						     <p:inputText value="#{emplBeans.certiEmploye1.nomAr}"/>
+							<h:outputText value="تاريخ الإزدياد :" style="font-weight:bold" />			
+							<p:inputText value="#{emplBeans.certiEmploye1.dnaissance}"/>
+							<h:outputText value="رقم البطاقة الوطنية :" style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.certiEmploye1.cin}"  />
+							<h:outputText value="تاريخ الشروع في العمل :" style="font-weight:bold" />				
+							<p:inputText value="#{emplBeans.certiEmploye1.dateDebutTravail}" />
+						    <h:outputText value="نوع العامل :" style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.certiEmploye1.typeEmployeAr}" />
+							<h:outputText value="منحة المهنة :" style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.certiEmploye1.professionMinehaAr}" />
+							<h:outputText value="المهنة :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.certiEmploye1.professionAr}" />
+							<h:outputText value="الأجر اليومي :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.certiEmploye1.salaireJrneeAr}" />
+							<h:outputText value="منح الأقدمية :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.certiEmploye1.bourseAncienteAe}" />
+							<h:outputText value=" منحة الساعات الإضافي :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.certiEmploye1.salaireBaseNet}" />
+							<h:outputText value=" منح أخرى :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.certiEmploye1.bourseAutresAe}" />
+							 <h:outputText value="زصندوق الضمان الإجتم:" style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.certiEmploye1.cnns}" />
+							<h:outputText value="منح :"  style="font-weight:bold" />
+							<p:inputText value="#{emplBeans.certiEmploye1.tauxAnciente}" />
+							<h:inputText value="#{emplBeans.emplSelected.nuserIdn}"  />
+							<f:facet name="footer">
+								<p:separator />
+								<p:commandButton id="ReglageEmplAdd" update=":formDataTale, :msgs"
+									actionListener="#{emplBeans.AjoutReg(actionEvent)}"
+									oncomplete="PF('ReglageEmplAdd').hide()" title="ajouter"
+									value="sauvegarder" />
+								<p:commandButton id="Annuler"  action="#{reglageEmployerBeans.Init}"
+									oncomplete="PF('ReglageEmplAdd').hide()"   value="Annuler" />
+							</f:facet>
+						</h:panelGrid>
+					</p:dialog>
+					</h:form>  
+                   
+            	</ui:define>
+            </ui:composition>
+        </div>
+        
+    </h:body>
+</html>
